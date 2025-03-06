@@ -14,6 +14,8 @@ public class ElasticBufferCommand implements SimpleCommand {
     private final LogBuffer logBuffer;
     private final PluginLogger logger;
 
+    // Nazwa permisji do używania komendy
+    private static final String PERMISSION = "elasticbuffer.admin";
     public ElasticBufferCommand(LogBuffer logBuffer, PluginLogger logger) {
         this.logBuffer = logBuffer;
         this.logger = logger;
@@ -24,8 +26,14 @@ public class ElasticBufferCommand implements SimpleCommand {
         CommandSource source = invocation.source();
         String[] args = invocation.arguments();
 
+        // 🔹 Sprawdzamy, czy użytkownik ma permisję
+        if (!source.hasPermission(PERMISSION)) {
+            source.sendMessage(Component.text("§cYou do not have permission to use this command!"));
+            return;
+        }
+
         if (args.length == 0) {
-            source.sendMessage(Component.text("Usage: /elasticbuffer <flush|status>"));
+            source.sendMessage(Component.text("Usage: /elasticbufferv <flush|status>"));
             return;
         }
 
@@ -43,6 +51,10 @@ public class ElasticBufferCommand implements SimpleCommand {
                 source.sendMessage(Component.text("Unknown command. Usage: /elasticbuffer <flush|status>"));
                 break;
         }
+    }
+    @Override
+    public boolean hasPermission(Invocation invocation) {
+        return invocation.source().hasPermission(PERMISSION);
     }
 }
 
